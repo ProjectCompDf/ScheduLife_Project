@@ -2,14 +2,14 @@ package com.example.schedulifeproject;
 
 import static com.example.schedulifeproject.FBref.refUsers;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainScreen extends AppCompatActivity
 {
     private EditText ED1;
     private EditText ED2;

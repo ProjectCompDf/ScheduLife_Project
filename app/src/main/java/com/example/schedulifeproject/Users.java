@@ -1,17 +1,20 @@
 package com.example.schedulifeproject;
 
+import java.util.Objects;
+
+
 public class Users {
     private String Username;
     private String Password;
-    private String Gmail;
+    private String Email;
 
-    public Users (String username, String password, String gmail) {
+
+    public Users (String username, String password, String email) {
         this.Username=username;
         this.Password=password;
-        this.Gmail=gmail;
+        this.Email=email;
     }
     public Users() {
-
     }
 
     public String getUsername() {
@@ -30,11 +33,27 @@ public class Users {
         Password = password;
     }
 
-    public String getGmail() {
-        return Gmail;
+    public String getEmail() {
+        return Email;
     }
 
-    public void setGmail(String gmail) {
-        Gmail = gmail;
+    public void setEmail(String email) {
+        Email = email;
+    }
+
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Users users = (Users) o;
+        return Username.equals(users.Username) && Password.equals(users.Password) && Email.equals(users.Email);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(Username, Password, Email);
     }
 }
