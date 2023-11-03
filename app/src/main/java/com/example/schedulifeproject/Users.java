@@ -16,7 +16,10 @@ public class Users {
     }
     public Users() {
     }
+    public Users(Users user)
+    {
 
+    }
     public String getUsername() {
         return Username;
     }

@@ -19,7 +19,7 @@ public class MainScreen extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_mainscreen);
         ED1 = findViewById(R.id.editText);
         ED2 = findViewById(R.id.editText2);
 
