@@ -83,8 +83,22 @@
         android:layout_height="48dp"
         android:layout_marginStart="232dp"
         android:layout_marginTop="388dp"
+        android:onClick="SignUp"
         android:text="SignUp"
         android:textSize="7dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextSizeCheck" />
+
+    <Button
+        android:id="@+id/mapButton"
+        android:layout_width="81dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="312dp"
+        android:layout_marginTop="56dp"
+        android:onClick="MapIntent"
+        android:text="Map"
+        android:textSize="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="TextSizeCheck" />

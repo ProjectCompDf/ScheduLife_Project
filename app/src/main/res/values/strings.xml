@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ScheduLife Project</string>
+    <string name="title_activity_google_maps">GoogleMapsActivity</string>
+    <string name="my_googlemaps_apikey">AIzaSyArg74nidtUwduo3UWY1NWE_zH7xcKgEKw</string>
 </resources>

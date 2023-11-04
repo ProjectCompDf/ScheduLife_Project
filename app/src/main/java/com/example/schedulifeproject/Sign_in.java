@@ -2,7 +2,9 @@ package com.example.schedulifeproject;
 
 import static com.example.schedulifeproject.FBref.refUsers;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -39,12 +41,30 @@ public class Sign_in extends AppCompatActivity {
     //    Toast.makeText(this, "You are now signed in", Toast.LENGTH_SHORT).show();
     public void SignUp(View view)
     {
+        if(TextUtils.isEmpty(ED1.getText()))
+        {
+            Toast.makeText(Sign_in.this, "Enter a Username", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(TextUtils.isEmpty(ED2.getText()))
+        {
+            Toast.makeText(Sign_in.this, "Enter a password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(TextUtils.isEmpty(ED3.getText()))
+        {
+            Toast.makeText(Sign_in.this, "Enter your email", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        //RealTime Database
         Users User=new Users(ED1.getText().toString(),ED2.getText().toString(),ED3.getText().toString());
-        Users User2=new Users("Avihay.com","123.456", "avihayHaimBartal@gmail.com");
+        //Users User2=new Users("Avihay.com","123.456", "avihayHaimBartal@gmail.com");
         refUsers.child(User.getUsername()).setValue(User);
 
-
-        mAuth.createUserWithEmailAndPassword(ED3.getText().toString(), ED2.getText().toString())
+        //Authentication
+        mAuth.createUserWithEmailAndPassword(User.getEmail(), User.getPassword())
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -65,5 +85,11 @@ public class Sign_in extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    public void Login(View view) {
+        Intent intent = new Intent(getApplicationContext(), Login.class);
+        startActivity(intent);
+        finish();
     }
 }

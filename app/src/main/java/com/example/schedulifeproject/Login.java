@@ -2,8 +2,10 @@ package com.example.schedulifeproject;
 
 import static com.example.schedulifeproject.FBref.refUsers;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,8 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,9 +57,20 @@ public class Login extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("NotConstructor")
     public void Login(View view)
 
     {
+        if(TextUtils.isEmpty(ED1.getText()))
+        {
+            Toast.makeText(Login.this, "Enter your Username", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(TextUtils.isEmpty(ED2.getText()))
+        {
+            Toast.makeText(Login.this, "Enter your password", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         String thisUserName = ED1.getText().toString();
 
@@ -77,7 +93,8 @@ public class Login extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task)
                             {
-                                if (task.isSuccessful()) {
+                                if (task.isSuccessful())
+                                {
                                     // Sign in success, update UI with the signed-in user's information
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     Toast.makeText(Login.this, "Authentication Success.",
@@ -93,6 +110,22 @@ public class Login extends AppCompatActivity {
                                     Toast.makeText(Login.this, "Authentication failed.",
                                             Toast.LENGTH_SHORT).show();
 
+                                    try
+                                    {
+                                        throw task.getException(); // Throw an exception to handle different cases
+                                    } catch (FirebaseAuthInvalidUserException e) {
+                                        Toast.makeText(Login.this, "Email is not registered, create an account with that Email.",
+                                                Toast.LENGTH_SHORT).show();
+                                    } catch (FirebaseAuthInvalidCredentialsException e) {
+                                        Toast.makeText(Login.this, "Incorrect password",
+                                                Toast.LENGTH_SHORT).show();
+                                    } catch (FirebaseNetworkException e) {
+                                        Toast.makeText(Login.this, "Network connection problem",
+                                                Toast.LENGTH_SHORT).show();
+                                    } catch (Exception e) {
+                                        Toast.makeText(Login.this, "Something went wrong. Authentication failed.",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             }
                         });
@@ -112,4 +145,38 @@ public class Login extends AppCompatActivity {
     }
 
 
+    public void SignUp(View view) {
+        Intent intent = new Intent(getApplicationContext(), Sign_in.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void Guest(View view) {
+        mAuth.signInAnonymously()
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Toast.makeText(Login.this, "Authentication Success.",
+                                    Toast.LENGTH_SHORT).show();
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+
+                            Toast.makeText(Login.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
+
+    }
+
+    public void MapIntent(View view) {
+        Intent intent = new Intent(getApplicationContext(), GoogleMapsActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }
