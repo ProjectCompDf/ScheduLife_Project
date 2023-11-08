@@ -79,59 +79,60 @@ public class Login extends AppCompatActivity {
         query.addListenerForSingleValueEvent(new ValueEventListener()
         {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
-            {
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren())
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
                 {
-                    // This loop will run once for the child with the specified name
-                    user = userSnapshot.getValue(Users.class); // Assuming User is your data model
+                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren())
+                    {
+                        user = userSnapshot.getValue(Users.class);
+                    }
+                    mAuth.signInWithEmailAndPassword(user.getEmail().toString(), ED2.getText().toString())
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        Toast.makeText(Login.this, "Authentication Success.",
+                                                Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(getApplicationContext(), MainScreen.class);
+                                        startActivity(intent);
+                                        finish();
 
-                }
-                mAuth.signInWithEmailAndPassword(user.getEmail().toString(), ED2.getText().toString())
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>()
-                        {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task)
-                            {
-                                if (task.isSuccessful())
-                                {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    Toast.makeText(Login.this, "Authentication Success.",
-                                            Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(), MainScreen.class);
-                                    startActivity(intent);
-                                    finish();
+                                    } else {
+                                        // If sign in fails, display a message to the user.
+                                        Toast.makeText(Login.this, "Authentication failed.",
+                                                Toast.LENGTH_SHORT).show();
 
-                                }
-                                else
-                                {
-                                    // If sign in fails, display a message to the user.
-                                    Toast.makeText(Login.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
-
-                                    try
-                                    {
-                                        throw task.getException(); // Throw an exception to handle different cases
-                                    } catch (FirebaseAuthInvalidUserException e) {
-                                        Toast.makeText(Login.this, "Email is not registered, create an account with that Email.",
-                                                Toast.LENGTH_SHORT).show();
-                                    } catch (FirebaseAuthInvalidCredentialsException e) {
-                                        Toast.makeText(Login.this, "Incorrect password",
-                                                Toast.LENGTH_SHORT).show();
-                                    } catch (FirebaseNetworkException e) {
-                                        Toast.makeText(Login.this, "Network connection problem",
-                                                Toast.LENGTH_SHORT).show();
-                                    } catch (Exception e) {
-                                        Toast.makeText(Login.this, "Something went wrong. Authentication failed.",
-                                                Toast.LENGTH_SHORT).show();
+                                        try {
+                                            throw task.getException(); // Throw an exception to handle different cases
+                                        } catch (FirebaseAuthInvalidUserException e) {
+                                            Toast.makeText(Login.this, "Email is not registered, create an account with that Email.",
+                                                    Toast.LENGTH_SHORT).show();
+                                        } catch (FirebaseAuthInvalidCredentialsException e) {
+                                            Toast.makeText(Login.this, "Incorrect password",
+                                                    Toast.LENGTH_SHORT).show();
+                                        } catch (FirebaseNetworkException e) {
+                                            Toast.makeText(Login.this, "Network connection problem",
+                                                    Toast.LENGTH_SHORT).show();
+                                        } catch (Exception e) {
+                                            Toast.makeText(Login.this, "Something went wrong. Authentication failed.",
+                                                    Toast.LENGTH_SHORT).show();
+                                            e.printStackTrace();
+                                        }
                                     }
                                 }
-                            }
-                        });
+                            });
 
 
+                }
+                else
+                {
+                    Toast.makeText(Login.this, "Email is not registered, create an account with that Email.",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError)
