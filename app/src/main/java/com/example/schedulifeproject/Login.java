@@ -4,10 +4,12 @@ import static com.example.schedulifeproject.FBref.refUsers;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -35,32 +37,34 @@ public class Login extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private Users user;
     private Button signUpBT;
+    private CheckBox checkBox;
 
-
-
+    private SharedPreferences staySignedIn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //region Initialization
         setContentView(R.layout.activity_login);
         ED1 = findViewById(R.id.editText);
         ED2 = findViewById(R.id.editText2);
         mAuth = FirebaseAuth.getInstance();
         user = new Users();
-        signUpBT = findViewById(R.id.button4);
-        signUpBT.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Sign_in.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+        checkBox = findViewById(R.id.checkBox);
+        staySignedIn=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
+        //endregion
+
+        Boolean isChecked=staySignedIn.getBoolean("StayConnect",false);
+        if(isChecked)
+        {
+            String username=staySignedIn.getString("Username","Username");
+            String password=staySignedIn.getString("Password","Password");
+            authentication(username, password);
+        }
+
     }
 
     @SuppressLint("NotConstructor")
-    public void Login(View view)
-
-    {
+    public void login(View view) {
         if(TextUtils.isEmpty(ED1.getText()))
         {
             Toast.makeText(Login.this, "Enter your Username", Toast.LENGTH_SHORT).show();
@@ -71,10 +75,54 @@ public class Login extends AppCompatActivity {
             Toast.makeText(Login.this, "Enter your password", Toast.LENGTH_SHORT).show();
             return;
         }
+        String thisUsername = ED1.getText().toString();
+        String thisPassword= ED2.getText().toString();
+        authentication(thisUsername,thisPassword);
 
-        String thisUserName = ED1.getText().toString();
 
-        Query query = refUsers.orderByChild("username").equalTo(thisUserName);
+
+    }
+
+    public void signUp(View view) {
+        Intent intent = new Intent(getApplicationContext(), Sign_in.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void guest(View view) {
+        mAuth.signInAnonymously()
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Toast.makeText(Login.this, "Authentication Success.",
+                                    Toast.LENGTH_SHORT).show();
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+
+                            Toast.makeText(Login.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
+
+    }
+
+    public void mapIntent(View view) {
+        Intent intent = new Intent(getApplicationContext(), GoogleMapsActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void authentication(String username, String password){
+
+
+
+        Query query = refUsers.orderByChild("username").equalTo(username);
 
         query.addListenerForSingleValueEvent(new ValueEventListener()
         {
@@ -86,21 +134,28 @@ public class Login extends AppCompatActivity {
                     {
                         user = userSnapshot.getValue(Users.class);
                     }
-                    mAuth.signInWithEmailAndPassword(user.getEmail().toString(), ED2.getText().toString())
+                    mAuth.signInWithEmailAndPassword(user.getEmail().toString(),password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        // Sign in success, update UI with the signed-in user's information
                                         FirebaseUser user = mAuth.getCurrentUser();
                                         Toast.makeText(Login.this, "Authentication Success.",
                                                 Toast.LENGTH_SHORT).show();
+                                        if(checkBox.isChecked())
+                                        {
+                                            SharedPreferences.Editor editor = staySignedIn.edit();
+                                            editor.putBoolean("StayConnect", true);
+                                            editor.putString("Username", username);
+                                            editor.putString("Password", password);
+                                            editor.commit();
+                                        }
+
                                         Intent intent = new Intent(getApplicationContext(), MainScreen.class);
                                         startActivity(intent);
                                         finish();
 
                                     } else {
-                                        // If sign in fails, display a message to the user.
                                         Toast.makeText(Login.this, "Authentication failed.",
                                                 Toast.LENGTH_SHORT).show();
 
@@ -137,47 +192,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError)
             {
-                // Handle the error
             }
         });
-
-
-
-    }
-
-
-    public void SignUp(View view) {
-        Intent intent = new Intent(getApplicationContext(), Sign_in.class);
-        startActivity(intent);
-        finish();
-    }
-
-    public void Guest(View view) {
-        mAuth.signInAnonymously()
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Toast.makeText(Login.this, "Authentication Success.",
-                                    Toast.LENGTH_SHORT).show();
-                            FirebaseUser user = mAuth.getCurrentUser();
-
-                        } else {
-                            // If sign in fails, display a message to the user.
-
-                            Toast.makeText(Login.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-                });
-
-    }
-
-    public void MapIntent(View view) {
-        Intent intent = new Intent(getApplicationContext(), GoogleMapsActivity.class);
-        startActivity(intent);
-        finish();
     }
 }
