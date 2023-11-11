@@ -1,5 +1,6 @@
 package com.example.schedulifeproject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -15,6 +16,8 @@ public class MainScreen extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mainscreen);
+        Intent serviceIntent = new Intent(this, ServiceActivity.class);
+        startService(serviceIntent);
     }
 
     public void SignUp(View view) {

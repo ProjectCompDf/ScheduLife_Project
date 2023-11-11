@@ -5,6 +5,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -16,12 +20,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ScheduLifeProject"
         tools:targetApi="31">
-
+        <service
+            android:name=".ServiceActivity"
+            android:enabled="true"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/my_googlemaps_apikey"
-            />
+            android:value="@string/my_googlemaps_apikey" />
 
         <activity
             android:name=".GoogleMapsActivity"
@@ -38,10 +44,10 @@
         </activity>
         <activity
             android:name=".Sign_in"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".MainScreen"
-            android:exported="true"></activity>
+            android:exported="true" />
     </application>
 
 </manifest>
