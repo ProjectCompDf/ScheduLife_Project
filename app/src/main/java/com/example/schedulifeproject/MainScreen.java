@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainScreen extends AppCompatActivity
 {
 
-
+    public static final String CHANNEL_ID = "main_channel";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)

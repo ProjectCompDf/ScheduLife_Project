@@ -12,12 +12,13 @@ import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.IBinder;
+
 import androidx.core.app.NotificationCompat;
 
 public class ServiceActivity extends Service {
 
     private BroadcastReceiver batteryReceiver;
-    private static final String CHANNEL_ID = "battery_channel";
+    public static final String CHANNEL_ID = "battery_channel";
 
     @Override
     public void onCreate() {
@@ -69,15 +70,24 @@ public class ServiceActivity extends Service {
     }
 
     private void showLowBatteryNotification() {
-        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        Intent notificationIntent = new Intent(this, NotificationReceiver.class);
+        notificationIntent.putExtra("message", "Battery is at 5% or lower.");
+        notificationIntent.putExtra("channel_id", CHANNEL_ID);
 
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Low Battery Warning")
-                .setContentText("Battery is at 5% or lower.")
-                .setSmallIcon(R.drawable.ic_launcher_background)
-                .build();
-
-        notificationManager.notify(1, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                0,
+                notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        try
+        {
+            pendingIntent.send();
+        }
+        catch (PendingIntent.CanceledException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override
