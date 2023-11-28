@@ -38,7 +38,7 @@ public class Sign_in extends AppCompatActivity {
 
     }
 
-    //    Toast.makeText(this, "You are now signed in", Toast.LENGTH_SHORT).show();
+
     public void SignUp(View view)
     {
         if(TextUtils.isEmpty(ED1.getText()))
@@ -58,7 +58,7 @@ public class Sign_in extends AppCompatActivity {
         }
 
 
-        //RealTime Database
+
         Users User=new Users(ED1.getText().toString(),ED2.getText().toString(),ED3.getText().toString());
         //Users User2=new Users("Avihay.com","123.456", "avihayHaimBartal@gmail.com");
         refUsers.child(User.getUsername()).setValue(User);
@@ -74,8 +74,7 @@ public class Sign_in extends AppCompatActivity {
                         }
                         else
                         {
-                            // If sign in fails, display a message to the user.
-//                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+
                             Toast.makeText(Sign_in.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
 

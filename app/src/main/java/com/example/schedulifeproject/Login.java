@@ -95,13 +95,12 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+
                             Toast.makeText(Login.this, "Authentication Success.",
                                     Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
 
                         } else {
-                            // If sign in fails, display a message to the user.
 
                             Toast.makeText(Login.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
@@ -112,11 +111,7 @@ public class Login extends AppCompatActivity {
 
     }
 
-    public void mapIntent(View view) {
-        Intent intent = new Intent(getApplicationContext(), GoogleMapsActivity.class);
-        startActivity(intent);
-        finish();
-    }
+
 
     public void authentication(String username, String password){
 
@@ -195,4 +190,6 @@ public class Login extends AppCompatActivity {
             }
         });
     }
+
+
 }

@@ -37,13 +37,15 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     private GoogleMap mMap;
     private ActivityGoogleMapsBinding binding;
     private final int FINE_PERMISSION_CODE = 1;
-    Location currentLocation;
-    FusedLocationProviderClient fusedLocationProviderClient;
-    LocationRequest locationRequest;
-    LocationCallback locationCallback;
+    private Location currentLocation;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
+    private MarkerOptions currentMarkerOptions;
+    private MarkerOptions searchedLocationMarkerOptions;
     private Marker currentMarker;
-    private SearchView searchView;
     private Geocoder geocoder;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,12 +67,12 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
                         Address address = addresses.get(0);
                         LatLng searchLocation = new LatLng(address.getLatitude(), address.getLongitude());
 
-
                         if (currentMarker != null) {
                             currentMarker.remove();
                         }
 
-                        currentMarker = mMap.addMarker(new MarkerOptions().position(searchLocation).title("Searched Location"));
+                        searchedLocationMarkerOptions = new MarkerOptions().position(searchLocation).title("Searched Location");
+                        mMap.addMarker(searchedLocationMarkerOptions);
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(searchLocation));
 
                         return true;
@@ -99,25 +101,39 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null) {
-                    return;
+                if (mMap != null) {
+                    if (locationResult == null) {
+                        return;
+                    }
+                    Location location = locationResult.getLastLocation();
+
+                    currentMarkerOptions = new MarkerOptions()
+                            .position(new LatLng(location.getLatitude(), location.getLongitude()))
+                            .title("Your current location");
+
+                    updateMap();
                 }
-                Location location = locationResult.getLastLocation();
-
-
-                if (currentMarker == null) {
-                    LatLng initialLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                    currentMarker = mMap.addMarker(new MarkerOptions().position(initialLocation).title("Your current location"));
-                }
-
-
-                LatLng newLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                currentMarker.setPosition(newLocation);
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(newLocation));
             }
         };
 
         getLastLocation();
+    }
+
+    private void updateMap() {
+
+        mMap.clear();
+
+        if (currentMarkerOptions != null) {
+            currentMarker = mMap.addMarker(currentMarkerOptions);
+        }
+
+        // Add searched location marker
+        if (searchedLocationMarkerOptions != null) {
+            mMap.addMarker(searchedLocationMarkerOptions);
+        }
+
+
+
     }
 
     protected void onResume() {
@@ -165,9 +181,14 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        LatLng initialLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        currentMarker = mMap.addMarker(new MarkerOptions().position(initialLocation).title("Your current location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(initialLocation));
+
+
+        if (currentMarkerOptions != null) {
+            currentMarker = mMap.addMarker(currentMarkerOptions);
+        }
+
+
+        updateMap();
     }
 
     private void startLocationUpdates() {

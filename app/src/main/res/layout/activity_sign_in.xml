@@ -72,7 +72,7 @@
         android:layout_marginTop="408dp"
         android:ems="10"
         android:hint="Enter"
-        android:inputType="textPassword"
+        android:inputType="text"
         android:minHeight="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

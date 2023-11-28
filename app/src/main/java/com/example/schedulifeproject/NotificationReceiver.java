@@ -20,23 +20,24 @@ public class NotificationReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String message = intent.getStringExtra("message");
         String channelId = intent.getStringExtra(CHANNEL_ID_EXTRA);
+        int NOTIFICATION_ID = intent.getIntExtra("notification_id",1);
 
         if (channelId == null) {
 
-            channelId = NotificationActivity.CHANNEL_ID;
+            channelId =  DEFAULT_CHANNEL_ID;
         }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                 .setContentTitle("Scheduled Notification")
                 .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setOngoing(false);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
 
         if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider handling the case where permission is not granted.
             return;
         }
 

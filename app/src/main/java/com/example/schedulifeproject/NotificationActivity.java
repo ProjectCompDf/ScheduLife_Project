@@ -25,7 +25,7 @@ public class NotificationActivity extends AppCompatActivity {
     private Button btnSendNotification, btnScheduleNotification;
 
     public static final String CHANNEL_ID = "NOTIFICATION_CHANNEL_ID";
-    private static final int NOTIFICATION_ID = 1;
+    private static final int NOTIFICATION_ID = 2;
     private static final String CHANNEL_NAME = "NOTI_ACTIVITY";
 
     @Override
@@ -62,15 +62,16 @@ public class NotificationActivity extends AppCompatActivity {
             Intent notificationIntent = new Intent(this, NotificationReceiver.class);
             notificationIntent.putExtra("message", message);
             notificationIntent.putExtra("channel_id",CHANNEL_ID);
+            notificationIntent.putExtra("notification_id",NOTIFICATION_ID);
+
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
                     this,
-                    0,
+                    (int) System.currentTimeMillis(),
                     notificationIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
 
-            // Immediately send the intent
             try {
                 pendingIntent.send();
             } catch (PendingIntent.CanceledException e) {
@@ -84,7 +85,7 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     private void openTimePicker() {
-        // Use the current time as the default values for the picker
+
         final Calendar c = Calendar.getInstance();
         int hour = c.get(Calendar.HOUR_OF_DAY);
         int minute = c.get(Calendar.MINUTE);
@@ -101,7 +102,7 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     private void scheduleNotification(int hour, int minute) {
-        String message = editTextMessage.getText().toString().trim();
+        String message = editTextMessage.getText().toString();
 
         if (!message.isEmpty()) {
             createNotificationChannel();
@@ -109,6 +110,7 @@ public class NotificationActivity extends AppCompatActivity {
             Intent notificationIntent = new Intent(this, NotificationReceiver.class);
             notificationIntent.putExtra("message", message);
             notificationIntent.putExtra("channel_id", CHANNEL_ID);
+            notificationIntent.putExtra("notification_id", NOTIFICATION_ID);
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
                     this,
@@ -117,7 +119,7 @@ public class NotificationActivity extends AppCompatActivity {
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
 
-            long futureInMillis = calculateFutureTime(hour, minute); // Calculate the time in milliseconds
+            long futureInMillis = calculateFutureTime(hour, minute);
 
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, futureInMillis, pendingIntent);
@@ -136,7 +138,7 @@ public class NotificationActivity extends AppCompatActivity {
         long futureInMillis = System.currentTimeMillis();
 
         if ((hour < currentHour) || (hour == currentHour && minute <= currentMinute)) {
-            // If the selected time is before the current time, schedule it for the next day
+
             calendar.add(Calendar.DAY_OF_YEAR, 1);
         }
 

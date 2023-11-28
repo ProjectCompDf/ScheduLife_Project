@@ -74,7 +74,8 @@ public class ServiceActivity extends Service {
         notificationIntent.putExtra("message", "Battery is at 5% or lower.");
         notificationIntent.putExtra("channel_id", CHANNEL_ID);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+        PendingIntent pendingIntent = PendingIntent.getBroadcast
+        (
                 this,
                 0,
                 notificationIntent,
@@ -100,11 +101,27 @@ public class ServiceActivity extends Service {
         Intent notificationIntent = new Intent(this, ServiceActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        Intent stopServiceIntent = new Intent(this, NotificationReceiver.class);
+        stopServiceIntent.setAction("STOP_SERVICE");
+        PendingIntent stopServicePendingIntent = PendingIntent.getBroadcast(
+                this,
+                1,
+                stopServiceIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        NotificationCompat.Action stopServiceAction = new NotificationCompat.Action.Builder(
+                android.R.drawable.ic_menu_close_clear_cancel,
+                "Stop Service",
+                stopServicePendingIntent
+        ).build();
+
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Battery Service")
                 .setContentText("Monitoring battery status.")
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentIntent(pendingIntent)
+                .addAction(stopServiceAction)
                 .setOngoing(false)
                 .build();
     }

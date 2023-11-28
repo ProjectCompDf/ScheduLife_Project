@@ -6,14 +6,55 @@
     android:layout_height="match_parent"
     tools:context=".MainScreen">
 
-    <TextView
-        android:id="@+id/textView"
+    <Button
+        android:id="@+id/mapButton"
+        android:layout_width="110dp"
+        android:layout_height="78dp"
+        android:layout_marginStart="268dp"
+        android:layout_marginTop="84dp"
+        android:onClick="mapIntent"
+        android:text="Map"
+        android:textSize="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextSizeCheck" />
+
+    <Button
+        android:id="@+id/notificationButton"
+        android:layout_width="110dp"
+        android:layout_height="77dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="84dp"
+        android:onClick="NotificationIntent"
+        android:text="Notification"
+        android:textSize="11dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextSizeCheck" />
+    <EditText
+        android:id="@+id/editText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="96dp"
-        android:layout_marginTop="204dp"
-        android:text="Welcome"
+        android:layout_marginTop="248dp"
+        android:ems="10"
+        android:hint="Enter"
+        android:inputType="text"
+        android:minHeight="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/StorageSave"
+        android:layout_width="110dp"
+        android:layout_height="77dp"
+        android:layout_marginStart="148dp"
+        android:layout_marginTop="364dp"
+        android:onClick="SaveInStorage"
+        android:text="Save"
+        android:textSize="11dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextSizeCheck" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
